@@ -5,10 +5,12 @@
   "author": "Cl3MM",
   "license": "MIT",
   "dependencies": {
+    "casperjs": "^1.1.4",
     "chromium": "^1.0.2",
     "moment": "^2.19.3",
     "mongodb": "^2.2.33",
     "nickjs": "^0.2.4",
+    "phantomjs-prebuilt": "^2.1.16",
     "primus": "^7.1.0"
   }
 }

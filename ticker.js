@@ -1,3 +1,5 @@
+'use strict'
+
 const chromium = require('chromium')
 const moment = require('moment')
 const Primus = require('primus')
@@ -7,18 +9,28 @@ const ws = `ws://${WS_NAME}:${WS_PORT}`
 const Socket = Primus.createSocket()
 const client = new Socket(ws)
 
+// const CHROME_PATH = '/usr/bin/chromium-browser'
+// process.env.CHROME_PATH = CHROME_PATH
+// console.log(CHROME_PATH)
+// const path = require('path')
+process.env.PHANTOMJS_EXECUTABLE = '/usr/local/bin/phantomjs'
+console.log(process.env.PHANTOMJS_EXECUTABLE)
 process.env.CHROME_PATH = chromium.path
+process.env.NICKJS_NO_SANDBOX = 1
+console.log(chromium.path)
 
 const Nick = require("nickjs")
 const nick = new Nick({
-  printNavigation: false,
+//  printNavigation: false,
 })
-
+console.log('[+] Nick OK')
 const goGetACrypt = async () => {
-
+  console.log('[+] starting new tab...')
   const tab = await nick.newTab()
+  console.log('[+] opening bitinfocharts...')
   await tab.open('https://bitinfocharts.com/cryptocurrency-exchange-rates/#EUR')
   await tab.untilVisible("tr.ptr")
+  console.log('[+] evaluating...')
   return tab.evaluate((arg, callback) => {
       const ar = []
       $('tr.ptr').each(function () {
@@ -41,7 +53,7 @@ const goGetACrypt = async () => {
     })
     .then((data) => {
       if (!data || !data[0]) {
-        console.log(`no results found (${retries}/3)`)
+        console.log(`no results found`)
         nick.exit()
         return
       }

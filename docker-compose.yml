@@ -1,34 +1,38 @@
 version: '2'
 services:
-  crypticker_ticker:
-    image: crypticker_ticker
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command: crond -f -d 8
-    links:
-      - crypticker_srv
-    depends_on:
-      - crypticker_srv
-    restart: always
-    environment:
-      - WS_PORT=${WS_PORT}
-      - WS_NAME='crypticker_srv'
-    env_file:
-      - .env
+  # crypticker_ticker:
+  #   image: crypticker
+  #   container_name: crypticker_ticker
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   command: cron && tail -f /var/log/cron.log
+  #   links:
+  #     - crypticker_srv
+  #   depends_on:
+  #     - crypticker_srv
+  #   restart: always
+  #   environment:
+  #     - STDOUT_LOC=/proc/1/fd/1
+  #     - STDERR_LOC=/proc/1/fd/2
+  #     - WS_PORT=${WS_PORT}
+  #     - WS_NAME='crypticker_srv'
+  #   env_file:
+  #     - .env
 
   crypticker_srv:
-    container_name: crypticker_srv
+    image: crypticker
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: crypticker_srv
     command: node server.js
     links:
       - crypticker_db
     depends_on:
       - crypticker_db
     ports:
-      - "${WS_PORT}"
+      - "127.0.0.1:${WS_HOST_PORT}:${WS_PORT}"
     environment:
       - WS_PORT=${WS_PORT}
       - MONGO_PORT=${MONGO_PORT}
