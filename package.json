@@ -7,6 +7,7 @@
   "dependencies": {
     "chromium": "^1.0.2",
     "moment": "^2.19.3",
+    "mongodb": "^2.2.33",
     "nickjs": "^0.2.4",
     "primus": "^7.1.0"
   }
