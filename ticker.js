@@ -1,10 +1,11 @@
 const chromium = require('chromium')
 const moment = require('moment')
 const Primus = require('primus')
-const ws = 'ws://127.0.0.1:3000'
+const WS_NAME = process.env.WS_NAME || 'crypticker_srv'
+const WS_PORT = process.env.WS_PORT || 3000
+const ws = `ws://${WS_NAME}:${WS_PORT}`
 const Socket = Primus.createSocket()
 const client = new Socket(ws)
-const cryptoRoom = 'cryptos'
 
 process.env.CHROME_PATH = chromium.path
 
@@ -60,6 +61,7 @@ const goGetACrypt = async () => {
       nick.exit()
     })
 }
+
 goGetACrypt()
   .catch((err) => {
     console.log(`Something went terribly wrong: ${err}`)
