@@ -1,22 +1,26 @@
 const Primus = require('primus')
-const port = process.env.PORT || 3000
+const port = process.env.WS_PORT || 3000
+const MONGO_SRV = process.env.MONGO_SRV || 'crypticker_db'
+const MONGO_PORT = process.env.MONGO_PORT || 27017
+const MONGO_DB = process.env.MONGO_DB || 'crypticker'
+const MONGO_COLL = process.env.MONGO_COLL || 'tickers'
+const MONGO_URL = `mongodb://${MONGO_SRV}:${MONGO_PORT}/${MONGO_DB}`
+
 const http = require('http')
 const MongoClient = require('mongodb').MongoClient
+
 const server = http.createServer((req, res) => {
   res.setHeader('Content-Type', 'text/json')
-  res.write('yolo')
+  res.write(`Crypticker is ticking ${moment.utc().toISOString()}`)
   res.end()
 })
 const primus = new Primus(server)
 
-const MONGO_URL = 'mongodb://localhost:27017/myproject'
-const CRYPTO_COLLECTION = 'cryptos_prices'
-
 const insertDocuments = (db, data, callback) => {
   // Get the documents collection
-  const collection = db.collection(CRYPTO_COLLECTION)
+  const collection = db.collection(MONGO_COLL)
   // Insert some documents
-  collection.insertMany(data, callback)
+  return collection.insertMany(data, callback)
 }
 
 primus.on('connection', (spark) => {
