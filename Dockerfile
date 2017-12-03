@@ -6,8 +6,7 @@ ENV APP_PATH=/data \
     STDOUT_LOC=/proc/1/fd/1 \
     STDERR_LOC=/proc/1/fd/2
 
-COPY package.json yarn.lock /tmp
-COPY crontab /tmp
+COPY package.json yarn.lock crontab /tmp/
 
 RUN \
       mkdir -p $APP_PATH \
