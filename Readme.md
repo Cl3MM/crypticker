@@ -1,3 +1,3 @@
 # Crypticker
 
-Collect cryptocurrency prices from [bitinfocharts.com](www.bitinfocharts.com)
+Collect cryptocurrency prices from [bitinfocharts.com](https://www.bitinfocharts.com)
