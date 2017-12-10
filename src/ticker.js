@@ -1,16 +1,18 @@
+// require('babel-polyfill')
+const Promise = require('bluebird')
 const chromium = require('chromium')
 const moment = require('moment')
 const Primus = require('primus')
-const WS_NAME = process.env.WS_NAME || 'crypticker_srv'
-const WS_PORT = process.env.WS_PORT || 3000
-const ws = 'ws://' + WS_NAME + ':' + WS_PORT
+const WS_NAME = process.env.WS_NAME || '127.0.0.1'
+const WS_PORT = process.env.WS_PORT || 7918
+const ws = `ws://${WS_NAME}:${WS_PORT}`
 const Socket = Primus.createSocket()
 const client = new Socket(ws)
 
-// const CHROME_PATH = '/usr/bin/chromium-browser'
+// c o nst CHROME_PATH = '/usr/bin/chromium-browser'
 // process.env.CHROME_PATH = CHROME_PATH
 // console.log(CHROME_PATH)
-// const path = require('path')
+// c o ns t path = require('path')
 process.env.PHANTOMJS_EXECUTABLE = '/usr/local/bin/phantomjs'
 console.log(process.env.PHANTOMJS_EXECUTABLE)
 process.env.CHROME_PATH = chromium.path

@@ -6,6 +6,8 @@ const MONGO_DB = process.env.MONGO_DB || 'crypticker'
 const MONGO_COLL = process.env.MONGO_COLL || 'tickers'
 const MONGO_URL = `mongodb://${MONGO_SRV}:${MONGO_PORT}/${MONGO_DB}`
 
+console.log(`will persist data to: ${MONGO_URL}`)
+
 const http = require('http')
 const MongoClient = require('mongodb').MongoClient
 

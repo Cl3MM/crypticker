@@ -1,5 +1,20 @@
 version: '2'
 services:
+  yo:
+    image: crypticker
+    container_name: crypticker_ticker
+    shm_size: 512M
+    cap_add:
+      - SYS_ADMIN
+    build:
+      context: .
+      dockerfile: Docketeer
+    command: node puppeteer.js
+    links:
+      - crypticker_srv
+    depends_on:
+      - crypticker_srv
+    # command: node -e "`cat puppeteer.js`"
   # crypticker_ticker:
   #   image: crypticker
   #   container_name: crypticker_ticker
@@ -22,9 +37,9 @@ services:
 
   crypticker_srv:
     image: crypticker
-    build:
-      context: .
-      dockerfile: Dockerfile
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
     container_name: crypticker_srv
     command: node server.js
     links:
@@ -36,9 +51,9 @@ services:
     environment:
       - WS_PORT=${WS_PORT}
       - MONGO_PORT=${MONGO_PORT}
-      - MONGO_DB='crypticker'
-      - MONGO_COLL='tickers'
-      - MONGO_SRV='crypticker_srv'
+      - MONGO_DB=crypticker
+      - MONGO_COLL=tickers
+      - MONGO_SRV=crypticker_db
     env_file:
       - .env
     restart: always

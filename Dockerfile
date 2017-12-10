@@ -1,4 +1,4 @@
-FROM node:9.2
+FROM node:9.2-slim
 # FROM node:9.2-alpine
 
 MAINTAINER Cl3MM
@@ -11,17 +11,17 @@ COPY package.json yarn.lock crontab /tmp/
 
 RUN \
       mkdir -p $APP_PATH \
-      && apt-get update \
-      && apt-get install -y --no-install-recommends chrpath libssl-dev libxft-dev libfreetype6-dev libfontconfig1-dev
-RUN \
-      cd /tmp \
-      && PHANTOM_ARTIFACT="phantomjs-2.1.1-linux-x86_64" \
-      && wget --header="Accept: text/html" --user-agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:21.0) Gecko/20100101 Firefox/21.0" https://bitbucket.org/ariya/phantomjs/downloads/${PHANTOM_ARTIFACT}.tar.bz2 \
-      && tar -xvjf "$PHANTOM_ARTIFACT".tar.bz2 \
-      && mv "$PHANTOM_ARTIFACT" /usr/local/share \
-      && ln -sf /usr/local/share/"$PHANTOM_ARTIFACT"/bin/phantomjs /usr/local/bin
-RUN \
-      cd /tmp \
+      # && apt-get update \
+      # && apt-get install -y --no-install-recommends chrpath libssl-dev libxft-dev libfreetype6-dev libfontconfig1-dev
+# RUN \
+      && cd /tmp \
+#       && PHANTOM_ARTIFACT="phantomjs-2.1.1-linux-x86_64" \
+#       && wget --header="Accept: text/html" --user-agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:21.0) Gecko/20100101 Firefox/21.0" https://bitbucket.org/ariya/phantomjs/downloads/${PHANTOM_ARTIFACT}.tar.bz2 \
+#       && tar -xvjf "$PHANTOM_ARTIFACT".tar.bz2 \
+#       && mv "$PHANTOM_ARTIFACT" /usr/local/share \
+#       && ln -sf /usr/local/share/"$PHANTOM_ARTIFACT"/bin/phantomjs /usr/local/bin
+# RUN \
+#       cd /tmp \
       # && apt-get install -y --no-install-recommends bash tzdata cron \
       # && apt-get autoclean -y --force-yes \
       # && rm -rf /var/lib/apt/lists/* \

@@ -1,16 +1,20 @@
 {
+  "scripts": {
+    "casper": "node_modules/.bin/casper dist/ticker.js",
+    "build": "babel src -d dist",
+    "build:watch": "npm run build -- --watch"
+  },
   "name": "Crypticker",
   "version": "1.0.0",
   "main": "app.js",
   "author": "Cl3MM",
   "license": "MIT",
   "dependencies": {
-    "casperjs": "^1.1.4",
     "chromium": "^1.0.2",
     "moment": "^2.19.3",
     "mongodb": "^2.2.33",
     "nickjs": "^0.2.4",
-    "phantomjs-prebuilt": "^2.1.16",
-    "primus": "^7.1.0"
+    "primus": "^7.1.0",
+    "puppeteer": "^0.13.0"
   }
 }
