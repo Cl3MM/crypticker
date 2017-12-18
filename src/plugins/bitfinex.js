@@ -2,7 +2,7 @@ const Pluggin = require('./base')
 const Instrument = require('./inst')
 const { DateTime } = require('luxon')
 const axios = require('axios')
-const WebSocket = require('uws')
+const WebSocket = require('ws')
 
 const __NAME__ = "bitfinex"
 const __VERSION__ = "0.2"
@@ -67,6 +67,7 @@ module.exports = class BitFinex extends Pluggin {
     })
     this.ws.on('open', () => {
       this.log('connected')
+      this.ping()
       this.isRunning = true
       // if (interval) {
       //   clearInterval(interval)
@@ -74,7 +75,6 @@ module.exports = class BitFinex extends Pluggin {
       this.subscribe()
     })
 
-    this.ping()
 
     this.ws.on('message', this.processTicker.bind(this))
 

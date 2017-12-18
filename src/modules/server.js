@@ -7,30 +7,27 @@ const MongoDb = require('./persistence')
 module.exports = class Server {
   constructor (opts) {
     this.app = express()
+    this.app.get('/', this.serve.bind(this))
     this.port = process.env.WS_PORT || 3000
     this.server = http.createServer(this.app)
-    this.primus = new Primus(this.server, { transformer: 'uws' })
+    this.primus = new Primus(this.server, { transformer: 'websockets' })
+    this.db = new MongoDb()
 
-    this.db = {
-      persist: (data) => {
-        console.log(`FAKE PERSISTING DATA ${data.cur}`)
-      }
-    }//new MongoDb()
     return this
   }
 
   serve (req, res) {
-    res.setHeader('Content-Type', 'text/json')
-    res.write(`Crypticker is ticking ${moment.utc().toISOString()}`)
-    res.end()
+    this.db
+      .lastN()
+      .then(r => res.json(r))
+      .catch(e => res.status(500).json(e))
   }
 
   run () {
     this.primus.on('connection', (spark) => {
       spark.on('data', (data) => {
         if (data && data.action && data.action === 'tick') {
-          console.log(`saving ${data.data.length} to mongo`)
-          this.db.persist(data.data)
+          this.db.persistOne(data.data)
         }
       })
     })

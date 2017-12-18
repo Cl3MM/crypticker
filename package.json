@@ -12,10 +12,11 @@
   "dependencies": {
     "autobahn": "^17.5.2",
     "axios": "^0.17.1",
+    "express": "^4.16.2",
     "luxon": "^0.2.7",
     "moment": "^2.19.3",
     "mongodb": "^2.2.33",
     "primus": "^7.1.0",
-    "uws": "^9.14.0"
+    "ws": "^3.3.3"
   }
 }

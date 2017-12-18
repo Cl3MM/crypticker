@@ -1,47 +1,27 @@
 version: '2'
 services:
-  yo:
+  crypticker_ticker:
     image: crypticker
     container_name: crypticker_ticker
-    shm_size: 512M
-    cap_add:
-      - SYS_ADMIN
-    build:
-      context: .
-      dockerfile: Docketeer
-    command: node puppeteer.js
+    command: node src/modules/ticker.js
     links:
       - crypticker_srv
     depends_on:
       - crypticker_srv
-    # command: node -e "`cat puppeteer.js`"
-  # crypticker_ticker:
-  #   image: crypticker
-  #   container_name: crypticker_ticker
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   command: cron && tail -f /var/log/cron.log
-  #   links:
-  #     - crypticker_srv
-  #   depends_on:
-  #     - crypticker_srv
-  #   restart: always
-  #   environment:
-  #     - STDOUT_LOC=/proc/1/fd/1
-  #     - STDERR_LOC=/proc/1/fd/2
-  #     - WS_PORT=${WS_PORT}
-  #     - WS_NAME='crypticker_srv'
-  #   env_file:
-  #     - .env
+    restart: always
+    environment:
+      - WS_PORT=${WS_PORT}
+      - WS_NAME=crypticker_srv
+    env_file:
+      - .env
 
   crypticker_srv:
     image: crypticker
-    # build:
-    #   context: .
-    #   dockerfile: Dockerfile
     container_name: crypticker_srv
-    command: node server.js
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: node src/app.js
     links:
       - crypticker_db
     depends_on:

@@ -1,4 +1,5 @@
 const MongoClient = require('mongodb').MongoClient
+// const Logger = require('mongodb').Logger
 
 module.exports = class MongoDb {
   constructor (opts = {}) {
@@ -13,7 +14,7 @@ module.exports = class MongoDb {
     return this
   }
 
-  find (query) {
+  lastN (count = 100, skip = 0) {
     return new Promise((resolve, reject) => {
       MongoClient.connect(this.mongoUrl, (err, db) => {
         if (err) {
@@ -21,7 +22,7 @@ module.exports = class MongoDb {
           return reject(err)
         }
         const collection = db.collection(this.collection)
-        collection.fin(query).toArray((err, items) => {
+        collection.find().sort({time: 1}).skip(skip).limit(count).toArray((err, items) => {
           db.close()
           if (err) {
             return reject(err)
@@ -32,24 +33,64 @@ module.exports = class MongoDb {
     })
   }
 
-  persist (data) {
-    MongoClient.connect(this.mongoUrl, (err, db) => {
-      if (err) {
-        this.log(`[!] unable to connect to mongodb`, err)
-        return
-      }
-      this.insertMany(db, data, (err, res) => {
-        db.close()
+  find (query) {
+    return new Promise((resolve, reject) => {
+      MongoClient.connect(this.mongoUrl, (err, db) => {
         if (err) {
-          this.log(`[!] an error occured while inserting data`, err)
-          return
+          this.log(`[!] unable to connect to mongodb`, err)
+          return reject(err)
         }
-        this.log(`[+] data persisted successfuly!`)
+        const collection = db.collection(this.collection)
+        collection.find(query).toArray((err, items) => {
+          db.close()
+          if (err) {
+            return reject(err)
+          }
+          return resolve(items)
+        })
       })
     })
   }
-  insertMany (db, data, callback) {
-    const collection = db.collection(this.collection)
-    return collection.insertMany(data, callback)
+
+  persistOne (data) {
+    return new Promise((resolve, reject) => {
+      MongoClient.connect(this.mongoUrl, (err, db) => {
+        if (err) {
+          this.log(`[!] unable to connect to mongodb`, err)
+          return reject(err)
+        }
+        const collection = db.collection(this.collection)
+        collection.insertOne(data, (err, res) => {
+          db.close()
+          if (err) {
+            this.log(`[!] an error occured while inserting data`, err)
+            return reject(err)
+          }
+          this.log(`[+] data persisted successfuly!`)
+          return resolve(res)
+        })
+      })
+    })
+  }
+
+  persistMany (data) {
+    return new Promise((resolve, reject) => {
+      MongoClient.connect(this.mongoUrl, (err, db) => {
+        if (err) {
+          this.log(`[!] unable to connect to mongodb`, err)
+          return reject(err)
+        }
+        const collection = db.collection(this.collection)
+        collection.insertMany(data, (err, res) => {
+          db.close()
+          if (err) {
+            this.log(`[!] an error occured while inserting data`, err)
+            return reject(err)
+          }
+          this.log(`[+] data persisted successfuly!`)
+          return resolve(res)
+        })
+      })
+    })
   }
 }
