@@ -1,0 +1,33 @@
+FROM node:9.2-slim
+
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+
+COPY package.json yarn.lock /tmp/
+
+RUN apt-get update && apt-get install -y wget --no-install-recommends \
+    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
+    && apt-get update \
+    && apt-get install -y google-chrome-unstable --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get purge --auto-remove -y curl \
+    && rm -rf /src/*.deb \
+    && mkdir /data \
+    && groupadd -r pptruser && useradd -r -g pptruser -G audio,video pptruser \
+    && mkdir -p /home/pptruser/Downloads \
+    && chown -R pptruser:pptruser /home/pptruser \
+    && cd /tmp \
+    && yarn install --frozen-lockfile --production \
+    && mv /tmp/node_modules /data/ \
+    && rm -rf /tmp/* \
+    && chown -R pptruser:pptruser /data \
+    && cd /data
+
+WORKDIR /data
+
+COPY . /data
+
+# Run user as non privileged.
+USER pptruser
+
+CMD ["google-chrome-unstable"]

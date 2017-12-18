@@ -1,14 +1,22 @@
 {
+  "scripts": {
+    "casper": "node_modules/.bin/casper dist/ticker.js",
+    "build": "babel src -d dist",
+    "build:watch": "npm run build -- --watch"
+  },
   "name": "Crypticker",
   "version": "1.0.0",
   "main": "app.js",
   "author": "Cl3MM",
   "license": "MIT",
   "dependencies": {
-    "chromium": "^1.0.2",
+    "autobahn": "^17.5.2",
+    "axios": "^0.17.1",
+    "express": "^4.16.2",
+    "luxon": "^0.2.7",
     "moment": "^2.19.3",
     "mongodb": "^2.2.33",
-    "nickjs": "^0.2.4",
-    "primus": "^7.1.0"
+    "primus": "^7.1.0",
+    "ws": "^3.3.3"
   }
 }

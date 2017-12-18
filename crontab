@@ -1,3 +1,4 @@
-*/1 * * * * cd /data && node ticker.js > ${STDOUT_LOC} 2> ${STDERR_LOC}
-
+# */1 * * * * cd /data && sudo -u crypto bash -l -c 'node ticker.js > ${STDOUT_LOC} 2> ${STDERR_LOC}'
+# */1 * * * * crypto cd /data && node ticker.js >> /var/log/cron.log
+*/1 * * * * root echo "hello world!" >> /var/log/cron.log 2>&1
 

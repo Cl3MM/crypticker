@@ -10,14 +10,18 @@ class GoBrowseYourself {
     return this
   }
   init() {
+    console.log('initializing')
     return puppeteer.launch({
-        headless: false,
-        // slowMo: 250
+        headless: true,
+        executablePath: 'google-chrome-unstable',
+        slowMo: 250
       })
       .then(async b => {
         this.browser = b
+        console.log('starting browser')
         this.page = await this.browser.newPage()
         await this.page.setUserAgent(userAgent)
+        console.log('setting up view')
         await this.page.setViewport({
           width: 1280,
           height: 8000
@@ -31,6 +35,7 @@ class GoBrowseYourself {
       })
   }
   go() {
+    console.log('going to miami')
     return this.page
       .goto('https://bitinfocharts.com/cryptocurrency-exchange-rates/#EUR', {
         waitUntil: 'networkidle2'
@@ -42,20 +47,22 @@ class GoBrowseYourself {
     const aWindowHandler = await this.page.evaluateHandle(() => Promise.resolve(window));
     return this.page.evaluate(async (w) => {
       console.log('evaluating')
-      Object.defineProperties(navigator, {
-        languages: {
-          description: 'en-us'
-        },
-        plugins: {
-          value: ['adBlock'],
-          writable: true
-        }
-      });
+      // Object.defineProperties(navigator, {
+      //   languages: {
+      //     description: 'en-us'
+      //   },
+      //   plugins: {
+      //     value: ['adBlock'],
+      //     writable: true
+      //   }
+      // });
       const $ = w.$
       const o = {}
+      console.log('found ' + $('tr.ptr').length + ' tr')
       $('tr.ptr').each(function () {
         $(this).trigger('mouseover')
         $('.popover-content table tr:not(:first)').each(function () {
+          console.log(' - yolo')
           if ($(this).find('td').length < 4) return
           var buy = $(this).find('td.smlr:first').text()
           var sell = $(this).find('td.smlr:last').text()
@@ -84,15 +91,19 @@ class GoBrowseYourself {
   }
 }
 
+console.log('YOLO BITCH')
 const pp = new GoBrowseYourself()
+console.log('starting')
 pp.init()
   .then(pp.go.bind(pp))
   .then(pp.hoverAll.bind(pp))
   .then(async (o) => {
-    await pp.page.screenshot({
-      path: path.join(__dirname, 'screens', 'exit.png')
-    })
+    console.log('!!!!gotz data!!!!')
+    // await pp.page.screenshot({
+    //   path: path.join(__dirname, 'screens', 'exit.png')
+    // })
     const keys = Object.keys(o)
+    console.log(keys)
     const re = new RegExp(/^(.*) \w+$/i)
     keys.forEach((k) => {
       o[k].forEach((mkt) => {
