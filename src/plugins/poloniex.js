@@ -1,5 +1,4 @@
 const Pluggin = require('./base')
-const Instrument = require('./inst')
 const { DateTime } = require('luxon')
 const PoloniexApi = require('poloniex-api-node');
 const axios = require('axios')
@@ -73,11 +72,11 @@ class Poloniex extends Pluggin {
     //     "24hrLow":"0.00068667"
     // }
 
-    const inst = new Instrument({
+    const inst = {
       exchange: this.name,
       ocur: tick.currencyPair,
       cur: tick.currencyPair.toLowerCase().replace('_', ''),
-      time: DateTime.utc().toJSDate(),
+      time: DateTime.utc().toISO(),
       bid: tick.highestBid,
       ask: tick.lowestAsk,
       price: tick.last,
@@ -87,7 +86,7 @@ class Poloniex extends Pluggin {
       isFrozen: tick.isFrozen,
       high: tick['24hrHigh'],
       low: tick['24hrLow']
-    })
+    }
 
     if (this.dbCallback) {
       this.dbCallback(inst)
