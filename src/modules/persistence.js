@@ -66,7 +66,7 @@ module.exports = class MongoDb {
             this.log(`[!] an error occured while inserting data`, err)
             return reject(err)
           }
-          this.log(`[+] data persisted successfuly!`)
+          // this.log(`[+] data persisted successfuly!`)
           return resolve(res)
         })
       })
@@ -87,7 +87,7 @@ module.exports = class MongoDb {
             this.log(`[!] an error occured while inserting data`, err)
             return reject(err)
           }
-          this.log(`[+] data persisted successfuly!`)
+          // this.log(`[+] data persisted successfuly!`)
           return resolve(res)
         })
       })
