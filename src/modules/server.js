@@ -3,6 +3,7 @@ const express = require('express')
 const Primus = require('primus')
 const http = require('http')
 const MongoDb = require('./persistence')
+const Instrument = require('./inst')
 
 module.exports = class Server {
   constructor (opts) {
@@ -27,7 +28,7 @@ module.exports = class Server {
     this.primus.on('connection', (spark) => {
       spark.on('data', (data) => {
         if (data && data.action && data.action === 'tick') {
-          this.db.persistOne(data.data)
+          this.db.persistOne(new Instrument(data.data))
         }
       })
     })
