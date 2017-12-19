@@ -7,7 +7,7 @@ module.exports = class MongoDb {
     this.srv = process.env.MONGO_SRV || 'crypticker_db'
     this.port = process.env.MONGO_PORT || 27017
     this.db = process.env.MONGO_DB || 'crypticker'
-    this.collection = process.env.MONGO_COLL || 'tickers'
+    this.collection = opts.collection || process.env.MONGO_COLL || 'tickers'
     this.mongoUrl = `mongodb://${this.srv}:${this.port}/${this.db}`
     this.log(`will persist data to: ${this.mongoUrl}`)
 
