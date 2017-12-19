@@ -41,6 +41,7 @@ services:
   crypticker_db:
     container_name: crypticker_db
     image: mongo:latest
+    command: mongod --quiet --setParameter logLevel=1
     ports:
       - "127.0.0.1:${MONGO_HOST_PORT}:${MONGO_PORT}"
     volumes:
