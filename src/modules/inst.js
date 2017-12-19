@@ -37,8 +37,8 @@ class Instrument {
     })
 
     Object.keys(optionals).forEach((r) => {
-      if (required[r] && opts[r]) {
-        opts[r] = required[r](opts[r])
+      if (optionals[r] && opts[r]) {
+        opts[r] = optionals[r](opts[r])
       }
     })
 
