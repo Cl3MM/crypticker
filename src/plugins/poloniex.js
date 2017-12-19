@@ -75,6 +75,7 @@ class Poloniex extends Pluggin {
 
     const inst = new Instrument({
       exchange: this.name,
+      ocur: tick.currencyPair,
       cur: tick.currencyPair.toLowerCase().replace('_', ''),
       time: DateTime.utc(),
       bid: tick.highestBid,
