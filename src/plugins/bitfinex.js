@@ -8,12 +8,9 @@ const __NAME__ = "bitfinex"
 const __VERSION__ = "0.2"
 const __WS_URL = 'wss://api.bitfinex.com/ws/2'
 
-let isRunning = false
-let interval = null
-
 const log = (data) => console.log(JSON.stringify(data))
 
-module.exports = class BitFinex extends Pluggin {
+class BitFinex extends Pluggin {
   constructor (opts = {}) {
     super({
       name: __NAME__,
@@ -36,7 +33,6 @@ module.exports = class BitFinex extends Pluggin {
   }
 
   getCurrencies () {
-    this.log('getting currencies...')
     return axios.get('https://api.bitfinex.com/v1/symbols')
       .then(_ => (this.currencies = _.data.map(d => ({id: `t${d.toUpperCase()}`, cur: d}))), this)
   }
@@ -55,30 +51,31 @@ module.exports = class BitFinex extends Pluggin {
     if (!this.currencies[0]) {
       return this.getCurrencies().then(this.run.bind(this))
     }
-    this.ws = new WebSocket(__WS_URL)
 
-    this.ws.on('close', (msg) => {
-      this.log('CLOSED')
-      this.log(msg)
+    return new Promise((resolve, reject) => {
+
+      this.ws = new WebSocket(__WS_URL)
+
+      this.ws.on('close', (msg) => {
+        this.log('CLOSED')
+        this.log(msg)
+        resolve(this)
+        this.run()
+      })
+      this.ws.on('error', (msg) => {
+        this.log('ERROR')
+        this.log(msg)
+        resolve(msg)
+      })
+      this.ws.on('open', () => {
+        this.log('connected')
+        this.ping()
+        this.isRunning = true
+        this.subscribe()
+      })
+
+      this.ws.on('message', this.processTicker.bind(this))
     })
-    this.ws.on('error', (msg) => {
-      this.log('ERROR')
-      this.log(msg)
-    })
-    this.ws.on('open', () => {
-      this.log('connected')
-      this.ping()
-      this.isRunning = true
-      // if (interval) {
-      //   clearInterval(interval)
-      // }
-      this.subscribe()
-    })
-
-
-    this.ws.on('message', this.processTicker.bind(this))
-
-    return Promise.resolve(this)
   }
 
   processTicker (msg) {
@@ -138,6 +135,7 @@ module.exports = class BitFinex extends Pluggin {
       bidSize: data[1],
       ask: data[2],
       askSize: data[3],
+      change: data[5],
       price: data[6],
       volume: data[7],
       high: data[8],
@@ -149,6 +147,7 @@ module.exports = class BitFinex extends Pluggin {
     } else {
       this.log(inst)
     }
-    // this.log(`[${ts.toFormat('dd/LL/yyyy HH:mm:ss')}] ${cur.cur}: ${JSON.stringify(data)}`)
   }
 }
+
+module.exports = BitFinex
