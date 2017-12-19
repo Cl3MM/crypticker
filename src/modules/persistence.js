@@ -22,7 +22,7 @@ module.exports = class MongoDb {
           return reject(err)
         }
         const collection = db.collection(this.collection)
-        collection.find().sort({time: 1}).skip(skip).limit(count).toArray((err, items) => {
+        collection.find().sort({time: -1}).skip(skip).limit(count).toArray((err, items) => {
           db.close()
           if (err) {
             return reject(err)
