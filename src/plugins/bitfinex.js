@@ -1,5 +1,4 @@
 const Pluggin = require('./base')
-const Instrument = require('./inst')
 const { DateTime } = require('luxon')
 const axios = require('axios')
 const WebSocket = require('ws')
@@ -126,10 +125,10 @@ class BitFinex extends Pluggin {
     HIGH	float	Daily high
     LOW	float	Daily low
     */
-    const inst = new Instrument({
+    const inst = {
       exchange: this.name,
       cur: cur.cur,
-      time: DateTime.utc().toJSDate(),
+      time: DateTime.utc().toISO(),
       bid: data[0],
       bidSize: data[1],
       ask: data[2],
@@ -139,7 +138,7 @@ class BitFinex extends Pluggin {
       volume: data[7],
       high: data[8],
       low: data[9]
-    })
+    }
 
     if (this.dbCallback) {
       this.dbCallback(inst)
