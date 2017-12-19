@@ -77,7 +77,7 @@ class Poloniex extends Pluggin {
       exchange: this.name,
       ocur: tick.currencyPair,
       cur: tick.currencyPair.toLowerCase().replace('_', ''),
-      time: DateTime.utc(),
+      time: DateTime.utc().toJSDate(),
       bid: tick.highestBid,
       ask: tick.lowestAsk,
       price: tick.last,

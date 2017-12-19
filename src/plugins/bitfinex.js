@@ -102,14 +102,13 @@ class BitFinex extends Pluggin {
       let cur = this.currencies.find(c => c.channel === data[0])
       if (!cur) return
       // we got a valid tick!
-      const ts = DateTime.utc()
-      this.persistToDb(ts, cur, data[1])
+      this.persistToDb(cur, data[1])
     } else {
       this.log(data)
     }
   }
 
-  persistToDb (ts, cur, data) {
+  persistToDb (cur, data) {
     if (data.length != 10) {
       this.log(`wrong data length (${data.length})`)
       return
@@ -130,7 +129,7 @@ class BitFinex extends Pluggin {
     const inst = new Instrument({
       exchange: this.name,
       cur: cur.cur,
-      time: ts,
+      time: DateTime.utc().toJSDate(),
       bid: data[0],
       bidSize: data[1],
       ask: data[2],
