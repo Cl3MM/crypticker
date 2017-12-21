@@ -15,6 +15,7 @@
     "luxon": "^0.2.7",
     "moment": "^2.19.3",
     "mongodb": "^2.2.33",
+    "mongoose": "^4.13.7",
     "poloniex-api-node": "^1.6.5",
     "primus": "^7.1.0",
     "ws": "^3.3.3"
