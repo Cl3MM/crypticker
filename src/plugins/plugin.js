@@ -1,4 +1,4 @@
- module.exports = class BasePlugin {
+ class BasePlugin {
    constructor (opts) {
      const required = ['name', 'version']
      required.some( (p) => {
@@ -12,6 +12,15 @@
      return this
    }
 
+   start () {
+     throw new Error("start method not implemented")
+   }
+   stop () {
+     throw new Error("stop method not implemented")
+   }
+   restart () {
+     throw new Error("restart method not implemented")
+   }
    getCurrencies () {
      throw new Error("not implemented")
    }
@@ -24,3 +33,5 @@
      throw new Error("not implemented")
    }
  }
+
+module.exports = BasePlugin
