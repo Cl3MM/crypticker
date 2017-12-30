@@ -2,20 +2,20 @@
 # sudo ufw allow out from 172.25.0.1 to 172.25.0.2
 version: '2'
 services:
-  crypticker_ticker:
-    image: crypticker
-    container_name: crypticker_ticker
-    command: node src/modules/ticker.js
-    links:
-      - crypticker_srv
-    depends_on:
-      - crypticker_srv
-    restart: always
-    environment:
-      - WS_PORT=${WS_PORT}
-      - WS_NAME=crypticker_srv
-    env_file:
-      - .env
+  # crypticker_ticker:
+  #   image: crypticker
+  #   container_name: crypticker_ticker
+  #   command: node src/modules/ticker.js
+  #   links:
+  #     - crypticker_srv
+  #   depends_on:
+  #     - crypticker_srv
+  #   restart: always
+  #   environment:
+  #     - WS_PORT=${WS_PORT}
+  #     - WS_NAME=crypticker_srv
+  #   env_file:
+  #     - .env
 
   crypticker_srv:
     image: crypticker
