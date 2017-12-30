@@ -2,7 +2,7 @@ const Primus = require('primus')
 const wSrv = process.env.WS_NAME || '127.0.0.1'// 'crypticker_srv'
 const wPort = process.env.WS_PORT || 3000
 const ws = `ws://${wSrv}:${wPort}`
-const Socket = Primus.createSocket({ transformer: 'websockets' })
+const Socket = Primus.createSocket({ transformer: 'websockets', parser: 'EJSON' })
 const client = new Socket(ws)
 
 console.log(`connecting to websocket server ${ws}`)
