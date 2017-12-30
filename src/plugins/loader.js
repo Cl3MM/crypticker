@@ -26,10 +26,8 @@ class PluginLoader {
 
     this.plugins = pluginDirs.map((dir) => {
       const klass = require(`../plugins/${dir.toLowerCase()}`)
-
-      if (dir !== 'bitfinex') return
-
       if (!klass || typeof(klass) !== 'function') return
+
       const plugin = new klass(opts)
       console.log(`plugin [${plugin.name}] registered`)
       if (this.pluginsHash[plugin.name]) {
