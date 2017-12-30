@@ -1,29 +1,29 @@
-const Pluggin = require('./base')
+const pluginConf = require('./conf')
+const Model = require('./model')
+const Plugin = require('../plugin')
 const { DateTime } = require('luxon')
 const PoloniexApi = require('poloniex-api-node');
 const axios = require('axios')
 
-const __NAME__ = "poloniex"
-const __VERSION__ = "0.1"
-
 const log = (data) => console.log(JSON.stringify(data))
 
-class Poloniex extends Pluggin {
+class Poloniex extends Plugin {
   constructor (opts = {}) {
     super({
-      name: __NAME__,
-      version: __VERSION__
+      name: pluginConf.name,
+      version: pluginConf.version
     })
-    this.dbCallback = opts.dbCallback
     this.log = opts.log || log
+    this.save = opts.save || this.log
     this.connection = null
 
-    this.getCurrencies()
 
     return this
   }
 
-  run () {
+  start () {
+    this.getCurrencies()
+
     return new Promise((resolve, reject) => {
       this.connection = new PoloniexApi()
 
@@ -31,7 +31,7 @@ class Poloniex extends Pluggin {
 
       this.connection.on('message', (channelName, data, seq) => {
         if (channelName === 'ticker') {
-          this.persistToDb(data)
+          this.broadcast(data)
         }
       })
 
@@ -54,11 +54,11 @@ class Poloniex extends Pluggin {
   }
 
   getCurrencies () {
-    return axios.get('https://poloniex.com/public?command=returnCurrencies')
+    return axios.get(pluginConf.currenciesUrl)
       .then(_ => (this.currencies = _.data), this)
   }
 
-  persistToDb (tick) {
+  broadcast (tick) {
     // {
     //     "currencyPair":"ETH_CVC",
     //     "last":"0.00075422",
@@ -73,10 +73,10 @@ class Poloniex extends Pluggin {
     // }
 
     const inst = {
-      exchange: this.name,
+      mkt: this.name,
       ocur: tick.currencyPair,
       cur: tick.currencyPair.toLowerCase().replace('_', ''),
-      time: DateTime.utc().toISO(),
+      time: DateTime.utc().toJSDate(),
       bid: tick.highestBid,
       ask: tick.lowestAsk,
       price: tick.last,
@@ -87,12 +87,7 @@ class Poloniex extends Pluggin {
       high: tick['24hrHigh'],
       low: tick['24hrLow']
     }
-
-    if (this.dbCallback) {
-      this.dbCallback(inst)
-    } else {
-      this.log(inst)
-    }
+    this.save(new Model(inst))
   }
 }
 
