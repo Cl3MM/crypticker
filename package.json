@@ -11,6 +11,7 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^0.17.1",
+    "ejson": "^2.1.2",
     "express": "^4.16.2",
     "luxon": "^0.2.7",
     "moment": "^2.19.3",
