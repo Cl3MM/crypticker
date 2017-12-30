@@ -1,2 +1,2 @@
 const Server = require('./modules/server')
-const srv = new Server().run()
+const srv = new Server().start()
