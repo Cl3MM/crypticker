@@ -1,22 +1,20 @@
-const Pluggin = require('./base')
+const pluginConf = require('./conf')
+const Model = require('./model')
+const Plugin = require('../plugin')
 const { DateTime } = require('luxon')
 const axios = require('axios')
 const WebSocket = require('ws')
 
-const __NAME__ = "bitfinex"
-const __VERSION__ = "0.2"
-const __WS_URL = 'wss://api.bitfinex.com/ws/2'
-
 const log = (data) => console.log(JSON.stringify(data))
 
-class BitFinex extends Pluggin {
+class BitFinex extends Plugin {
   constructor (opts = {}) {
     super({
-      name: __NAME__,
-      version: __VERSION__
+      name: pluginConf.name,
+      version: pluginConf.version
     })
-    this.dbCallback = opts.dbCallback
     this.log = opts.log || log
+    this.save = opts.save || this.log
     this.ws = null
     this.isRunning = false
 
@@ -46,20 +44,20 @@ class BitFinex extends Pluggin {
     }))
   }
 
-  run () {
+  start () {
     if (!this.currencies[0]) {
-      return this.getCurrencies().then(this.run.bind(this))
+      return this.getCurrencies().then(this.start.bind(this))
     }
 
     return new Promise((resolve, reject) => {
 
-      this.ws = new WebSocket(__WS_URL)
+      this.ws = new WebSocket(pluginConf.wsUrl)
 
       this.ws.on('close', (msg) => {
         this.log('CLOSED')
         this.log(msg)
         resolve(this)
-        this.run()
+        this.start()
       })
       this.ws.on('error', (msg) => {
         this.log('ERROR')
@@ -100,19 +98,28 @@ class BitFinex extends Pluggin {
       if (data[1] && data[1] === 'hb') return
       let cur = this.currencies.find(c => c.channel === data[0])
       if (!cur) return
+
       // we got a valid tick!
-      this.persistToDb(cur, data[1])
+      this.transform({
+        cur: cur,
+        data: data[1]
+      })
+      // this.broadcast(cur, data[1])
     } else {
       this.log(data)
     }
   }
 
-  persistToDb (cur, data) {
-    if (data.length != 10) {
+  transform (opts) {
+    if (!opts.data) {
+      this.log(`data is missing`)
+      return
+    }
+    if (opts.data.length != 10) {
       this.log(`wrong data length (${data.length})`)
       return
     }
-    /*
+/*
     CHANNEL_ID	integer	Channel ID
     BID	float	Price of last highest bid
     BID_SIZE	float	Size of the last highest bid
@@ -126,25 +133,22 @@ class BitFinex extends Pluggin {
     LOW	float	Daily low
     */
     const inst = {
-      exchange: this.name,
-      cur: cur.cur,
+      mkt: this.name,
+      oCur: opts.cur.id,
+      cur: opts.cur.cur,
       time: DateTime.utc().toISO(),
-      bid: data[0],
-      bidSize: data[1],
-      ask: data[2],
-      askSize: data[3],
-      change: data[5],
-      price: data[6],
-      volume: data[7],
-      high: data[8],
-      low: data[9]
+      bid: opts.data[0],
+      bidSize: opts.data[1],
+      ask: opts.data[2],
+      askSize: opts.data[3],
+      change: opts.data[5],
+      price: opts.data[6],
+      volume: opts.data[7],
+      high: opts.data[8],
+      low: opts.data[9]
     }
 
-    if (this.dbCallback) {
-      this.dbCallback(inst)
-    } else {
-      this.log(inst)
-    }
+    this.save(new Model(inst))
   }
 }
 
