@@ -101,15 +101,12 @@ class HitBtc extends Plugin {
   processTicker (msg) {
     const data = JSON.parse(msg)
 
-    if(data.method && data.method === 'ticker' || data.channel && data.channel === 'ticker') {
-
-      const tick = data.method ? data.params : data.data
-      tick.method = data.method ? 'subscribed' : 'update'
-
+    if (data.method && data.method === 'ticker') {
+      const tick = data.params
       this.transform(tick)
     } else {
-      this.log('NOT A TICK')
-      this.log(data)
+      // this.log('NOT A TICK')
+      // this.log(data)
     }
   }
 
