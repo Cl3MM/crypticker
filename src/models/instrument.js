@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const options = {
-  discriminatorKey: 'kind',
+  discriminatorKey: 'mkt',
   autoIndex: true
 }
 
