@@ -1,10 +1,12 @@
 const mongoose = require('mongoose')
 const pluginConf = require('./conf')
 const Instrument = require('../../models/instrument')
-// const options = {discriminatorKey: 'kind'}
-// const bitfinexSchema = new mongoose.Schema({
-// }, options)
-//
-// const BitfinexInstrument = Instrument.discriminator(pluginConf.name, bitfinexSchema)
+const options = {discriminatorKey: 'mkt'}
 
-module.exports = Instrument
+const bitfinexSchema = new mongoose.Schema({
+  changeDay: Number,
+}, options)
+
+const BitfinexInstrument = Instrument.discriminator(pluginConf.name, bitfinexSchema)
+
+module.exports = BitfinexInstrument
